@@ -53,7 +53,6 @@ html {
 body {
   height: 100vh;
   height: 100dvh;
-  background: rgb(var(--clr-cyan-blue));
   color: rgb(var(--clr-light));
   font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
     Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
@@ -93,24 +92,37 @@ a {
 button {
   cursor: pointer;
 }
+
+.font-lg {
+  font-size: var(--font-size-large);
+}
+
+.font-md {
+  font-size: var(--font-size-medium);
+}
+
+.font-sm {
+  font-size: var(--font-size-small);
+}
 /* end of resets */
 
 /* nav */
 nav {
-  width: 100vw;
-  width: 100dvw;
+  width: 100%;
+  min-height: calc(60 / var(--pxrem));
   background: rgb(var(--clr-deep-blue));
   font-size: var(--font-size-medium);
   text-transform: uppercase;
 
   position: fixed;
   top: 0;
+  z-index: 999;
 }
 
 nav > * {
   margin-inline: auto;
   padding: var(--rem16);
-  width: 80%;
+  width: 90%;
 
   display: flex;
   justify-content: space-between;
@@ -197,7 +209,7 @@ nav > * {
   padding: 0;
   width: 60vw;
   height: 100vh;
-  background: rgb(var(--clr-dark-blue), 0.4);
+  background: rgb(var(--clr-bright-blue), 0.8);
   backdrop-filter: blur(5px);
   transform: translateX(100%);
   transition: transform 300ms ease;
@@ -229,10 +241,100 @@ nav > * {
 
 .bot-nav .nav__items:active,
 .bot-nav .nav__items.active {
-  background: rgb(var(--clr-dark-blue));
+  background: rgb(var(--clr-medium-blue));
 }
 /* end of nav */
 
 /* app */
+.app {
+  margin-top: calc(60 / var(--pxrem));
+}
 
+.app > section {
+  height: calc(300 / var(--pxrem));
+  background: rgb(var(--clr-deep-blue));
+}
+
+.app > section:nth-child(even) {
+  background: rgb(var(--clr-medium-blue));
+}
+
+.app > section > .container {
+  margin-inline: auto;
+  padding: var(--rem16);
+  width: 90%;
+}
+
+.app > .hero-section {
+  position: relative;
+}
+
+.hero-section::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  background: rgb(var(--clr-deep-blue), 0.6);
+  backdrop-filter: blur(5px);
+
+  display: block;
+
+  position: absolute;
+  z-index: 2;
+}
+
+.hero-section > .hero__background {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+
+  position: absolute;
+  z-index: 1;
+}
+
+.hero-section > .container {
+  height: 100%;
+  position: relative;
+  z-index: 3;
+}
+
+.hero__content {
+  height: 100%;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.hero__text {
+  text-align: center;
+}
+
+.hero__text > P:nth-child(1) {
+  margin-bottom: var(--rem8);
+  font-weight: bold;
+}
+
+.hero__button {
+  margin-inline: auto;
+  padding: var(--rem8) 0;
+  width: 80%;
+  background: rgb(var(--clr-light-cyan));
+  border: 1px solid transparent;
+  font-size: var(--font-size-small);
+  font-weight: bold;
+  text-transform: uppercase;
+  border-radius: calc(20 / var(--pxrem));
+  outline: none;
+  transition: transform 300ms ease, background 300ms ease;
+}
+
+.hero__button:hover,
+.hero__button:active {
+  background: rgb(var(--clr-cyan-blue));
+}
+
+.hero__button:active {
+  transform: scale(.98);
+
+}
 /* end of app */
