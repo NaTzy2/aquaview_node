@@ -88,9 +88,7 @@
                 />
               </div>
 
-              <div class="card__views">
-                <i class="fa-solid fa-eye"></i> 69k
-              </div>
+              <div class="card__views"><i class="fa-solid fa-eye"></i> 69k</div>
 
               <div class="card__content">
                 <p class="card__title">Lorem ipsum dolor sit amet.</p>
@@ -106,13 +104,78 @@
                 <button class="card__button">Lihat</button>
               </div>
             </div>
+
+            <div class="card">
+              <div class="card__img">
+                <img
+                  src="https://images.unsplash.com/photo-1597573337211-e1080012b84b?q=80&w=1527&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                />
+              </div>
+
+              <div class="card__views">
+                <i class="fa-solid fa-eye"></i> 6.9k
+              </div>
+
+              <div class="card__content">
+                <p class="card__title">Lorem ipsum dolor sit amet.</p>
+                <div class="card__info">
+                  <span class="card__tag paper">
+                    <p>kti</p>
+                  </span>
+
+                  <span class="dot"></span>
+
+                  <p class="card__date">1 Apr 2005</p>
+                </div>
+                <button class="card__button">Lihat</button>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
       <section class="works-section">
         <div class="container">
-          <p>placeholder</p>
+          <header class="section__header">
+            <h1>karya kami</h1>
+          </header>
+
+          <div class="works__search-filter">
+            <div class="works__filter">
+              <div class="filter__select" id="filter_type">
+                <p class="filter__selected">
+                  All 
+                  <i class="fa-solid fa-chevron-down"></i>
+                  <i class="fa-solid fa-xmark"></i>
+                </p>
+                <div class="filter__options">
+                  <p class="filter__items">all</p>
+                  <p class="filter__items">poster</p>
+                  <p class="filter__items">KTI</p>
+                </div>
+              </div>
+
+              <div class="filter__select" id="filter_upload">
+                <p class="filter__selected">
+                  newest
+                  <i class="fa-solid fa-chevron-down"></i>
+                  <i class="fa-solid fa-xmark"></i>
+                </p>
+                <div class="filter__options">
+                  <p class="filter__items">newest</p>
+                  <p class="filter__items">oldest</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- <div class="works__search">
+              <i class="fa-solid fa-magnifying-glass"></i>
+              <input type="text" id="works_search_input">
+              <i class="fa-solid fa-xmark"></i>
+            </div> -->
+          </div>
+
+          <div class="container__grid"></div>
         </div>
       </section>
     </main>
