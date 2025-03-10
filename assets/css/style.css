@@ -9,6 +9,8 @@
   --clr-soft-sky-blue: 146, 223, 239;
   --clr-pale-blue: 174, 232, 244;
   --clr-very-light-blue: 201, 239, 248;
+  --clr-poster: 118, 200, 147;
+  --clr-paper: 82, 182, 154;
   --clr-dark: 0, 0, 0;
   --clr-grey: 240, 240, 240;
   --clr-light: 255, 255, 255;
@@ -267,10 +269,10 @@ nav > * {
   margin-inline: auto;
   padding: var(--rem16);
   width: 90%;
-}
 
-.section__header {
-  margin-bottom: var(--rem16);
+  display: flex;
+  flex-direction: column;
+  gap: var(--rem16);
 }
 
 .section__header > h1 {
@@ -371,8 +373,10 @@ nav > * {
   width: 90%;
   background: rgb(var(--clr-deep-blue));
   border-radius: var(--rem8);
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-select: none;
 
   display: flex;
   flex-direction: column;
@@ -433,11 +437,16 @@ nav > * {
   padding: calc(4 / var(--pxrem)) var(--rem8);
   color: rgb(var(--clr-light));
   font-size: var(--font-size-small);
+  text-transform: uppercase;
   border-radius: calc(4 / var(--pxrem));
 }
 
 .container__flex .card__tag.poster {
-  background: rgb(var(--clr-soft-sky-blue));
+  background: rgb(var(--clr-poster));
+}
+
+.container__flex .card__tag.paper {
+  background: rgb(var(--clr-paper));
 }
 
 .container__flex .dot {
@@ -457,4 +466,57 @@ nav > * {
   border-radius: calc(20 / var(--pxrem));
 }
 /* end of popular */
+
+/* works */
+.works__search-filter {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+
+  position: relative;
+}
+
+.works__filter {
+  flex: 1;
+
+  display: flex;
+  gap: var(--rem16);
+}
+
+.filter__select {
+  min-width: 30%;
+}
+
+.filter__selected,
+.filter__items {
+  padding: var(--rem4) var(--rem8);
+  background: rgb(var(--clr-light-cyan));
+  text-transform: capitalize;
+  cursor: pointer;
+}
+
+.filter__selected {
+  border: 1px solid transparent;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.filter__select.active .filter__selected {
+  border-radius: var(--rem4);
+}
+
+.filter__selected i {
+  font-size: var(--font-size-small);
+}
+
+.filter__select.active .fa-chevron-down {
+  display: none;
+}
+
+.filter__selected .fa-xmark {
+  display: none;
+}
+/* end of works */
 /* end of app */
