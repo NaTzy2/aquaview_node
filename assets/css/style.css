@@ -50,6 +50,7 @@
 
 html {
   color-scheme: dark light;
+  scroll-behavior: smooth;
 }
 
 body {
@@ -73,8 +74,8 @@ svg {
 }
 
 img {
-  max-width: 100%;
-  height: auto;
+  width: 100%;
+  height: 100%;
   vertical-align: middle;
   font-style: italic;
   background-repeat: no-repeat;
@@ -95,16 +96,37 @@ button {
   cursor: pointer;
 }
 
-.font-lg {
-  font-size: var(--font-size-large);
+.card__img > img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
-.font-md {
-  font-size: var(--font-size-medium);
-}
-
-.font-sm {
+.card__tag {
+  padding: calc(4 / var(--pxrem)) var(--rem8);
+  color: rgb(var(--clr-light));
   font-size: var(--font-size-small);
+  text-transform: uppercase;
+  border-radius: calc(4 / var(--pxrem));
+}
+
+.card__tag.poster {
+  background: rgb(var(--clr-poster));
+}
+
+.card__tag.paper {
+  background: rgb(var(--clr-paper));
+}
+
+.card__title {
+  width: 100%;
+  font-weight: bold;
+  text-transform: capitalize;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+  display: block;
 }
 /* end of resets */
 
@@ -294,6 +316,9 @@ nav > * {
 
 /* hero */
 .app > .hero-section {
+  display: flex;
+  align-items: center;
+
   position: relative;
 }
 
@@ -390,9 +415,6 @@ nav > * {
 }
 
 .container__flex .card__img > img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
   object-position: center;
 }
 
@@ -414,39 +436,12 @@ nav > * {
   gap: var(--rem8);
 }
 
-.container__flex .card__title {
-  width: 100%;
-  font-weight: bold;
-  text-transform: capitalize;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-
-  display: block;
-}
-
 .container__flex .card__info {
   color: rgb(var(--clr-grey));
 
   display: flex;
   align-items: center;
   gap: var(--rem8);
-}
-
-.container__flex .card__tag {
-  padding: calc(4 / var(--pxrem)) var(--rem8);
-  color: rgb(var(--clr-light));
-  font-size: var(--font-size-small);
-  text-transform: uppercase;
-  border-radius: calc(4 / var(--pxrem));
-}
-
-.container__flex .card__tag.poster {
-  background: rgb(var(--clr-poster));
-}
-
-.container__flex .card__tag.paper {
-  background: rgb(var(--clr-paper));
 }
 
 .container__flex .dot {
@@ -479,7 +474,7 @@ nav > * {
   flex: 1;
 
   display: flex;
-  gap: var(--rem16);
+  gap: var(--rem8);
 }
 
 .filter__select {
@@ -491,6 +486,7 @@ nav > * {
 .filter__selected,
 .filter__items {
   padding: var(--rem4) var(--rem8);
+  height: calc(32 / var(--pxrem));
   background: rgb(var(--clr-light-cyan));
   text-transform: capitalize;
   cursor: pointer;
@@ -531,11 +527,16 @@ nav > * {
   overflow: hidden;
 
   position: absolute;
+  z-index: 2;
 }
 
 .filter__select.active .filter__options {
   height: 100%;
   overflow: visible;
+}
+
+.filter__select.active .filter__options > *:last-child {
+  border-radius: 0 0 var(--rem4) var(--rem4);
 }
 
 .filter__items.active {
@@ -545,13 +546,19 @@ nav > * {
 
 /* search */
 .works__search {
-  padding: var(--rem8) var(--rem16);
+  padding: var(--rem8);
+  height: calc(32 / var(--pxrem));
   background: rgb(var(--clr-light-cyan));
-  border-radius: var(--rem8);
+  border-radius: var(--rem4);
 
   display: flex;
   align-items: center;
   gap: var(--rem16);
+}
+
+.works__search.active {
+  padding-inline: calc(14 / var(--pxrem));
+  border-radius: var(--rem16);
 }
 
 .works__search,
@@ -580,5 +587,52 @@ nav > * {
   display: inline-block;
 }
 /* end of search */
+.container__grid {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(min(calc(140 / var(--pxrem)), 100%), 1fr)
+  );
+  gap: var(--rem8);
+}
+
+.container__grid .card {
+  aspect-ratio: 2/3;
+  border-radius: var(--rem4);
+  overflow: hidden;
+
+  position: relative;
+}
+
+.container__grid .card__img {
+  width: 100%;
+  height: 100%;
+}
+
+.container__grid .card__date {
+  padding: var(--rem4) var(--rem8);
+  padding-left: var(--rem16);
+  background: rgb(var(--clr-dark), 0.7);
+  font-size: var(--font-size-small);
+  border-radius: 0px var(--rem4) var(--rem4) 0px;
+
+  position: absolute;
+  top: var(--rem8);
+}
+
+.container__grid .card__tag {
+  position: absolute;
+  top: var(--rem8);
+  right: var(--rem16);
+}
+
+.container__grid .card__title {
+  padding: var(--rem8) var(--rem16);
+  background: rgb(var(--clr-dark), 0.7);
+
+  position: absolute;
+  bottom: 0;
+}
+
 /* end of works */
 /* end of app */
