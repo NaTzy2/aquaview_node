@@ -6,5 +6,5 @@ dotenv.config()
 const {createClient} = supabaseJs
 
 const SUPABASE_URL = process.env.DB_URL
-const SUPABASE_PW = process.env.DB_PASSWORD
-export const supabase = createClient(SUPABASE_URL, SUPABASE_PW)
+const SUPABASE_KEY = process.env.DB_API_KEY
+export const supabase = createClient(SUPABASE_URL, SUPABASE_KEY)

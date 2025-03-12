@@ -11,6 +11,18 @@ document.addEventListener("DOMContentLoaded", async () => {
   nav_bot.addEventListener("click", handleToggleNavLinks);
   works_filter.addEventListener("click", handleWorksFilter);
   works_search.addEventListener("click", handleToggleWorksSearch);
+
+  try {
+    const response = await fetch("/api/files");
+
+    if (!response.ok) throw new Error(`HTTP error! Stauts: ${response.status}`);
+
+    const filesData = await response.json();
+
+    readFilesData(filesData);
+  } catch (error) {
+    console.error("Error fetching files: ", error);
+  }
 });
 // end of event listeners
 
@@ -55,7 +67,7 @@ function handleToggleNavLinks(e) {
 
     let isNavChecked = hamburger_nav.checked;
     if (isNavChecked) {
-      hamburger_nav.checked = false
+      hamburger_nav.checked = false;
       nav_bot.classList.remove("active");
     }
 
@@ -141,4 +153,96 @@ function handleToggleWorksSearch(e) {
     return;
   }
 }
+
+function readFilesData(files) {
+  // handleCreateCards(files, "popular-section");
+  // handleCreateCards(files, "works-section");
+  const container = document.querySelector('.works-section .container__grid')
+
+  files.forEach((file) => {
+    const {
+      id,
+      title,
+      file_type,
+      upload_date,
+      modified_date,
+      view_count,
+      img_url,
+      pdf_url,
+    } = file;
+
+    const file_date = modified_date || upload_date
+    const file_tag = file_type === 'pdf' ? 'kti' : 'poster'
+
+    container.innerHTML += `
+    <div class="card">
+      <div class="card__img">
+        <img
+          src="${img_url}"
+        />
+      </div>
+
+      <span class="card__date">
+        <p>${handleFormatDate(file_date, 'ddmmm')}</p>
+      </span>
+
+      <span class="card__tag ${file_tag}">
+        <p>${file_tag}</p>
+      </span>
+    </div>
+    `
+  });
+}
+
+// function handleCreateCards(files, sectionClass) {
+//   const section = document.querySelector(sectionClass);
+
+//   switch (sectionClass) {
+//     case "works-section":
+//       const container = section.querySelector(".container__flex");
+
+//       files.forEach((file) => {
+//         const {
+//           id,
+//           title,
+//           file_type,
+//           upload_date,
+//           modified_date,
+//           view_count,
+//           img_url,
+//           pdf_url,
+//         } = file;
+//       });
+//       break;
+//   }
+// }
+
+function handleFormatDate(dateStr, format)
+{
+  const date = new Date(dateStr)
+
+  let result = ''
+
+  if(format === 'ddmmm')
+  {
+    result = date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short'
+    })
+
+    return result
+  }
+
+  if(format === 'ddmmmyyyy')
+  {
+    result = date.toLocaleDateString('en-GB', {
+      day: '2-digit',
+      month: 'short',
+      year: 'numeric'
+    })
+
+    return result
+  }
+}
+
 // end of functionsm

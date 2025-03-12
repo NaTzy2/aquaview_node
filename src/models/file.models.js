@@ -4,7 +4,10 @@ export async function getFiles()
 {
     const {data, error} = await supabase.from('files').select('*')
 
-    if(error) throw error
+    if(error) {
+        console.error("Supabase error: ", error)
+        throw error
+    }
 
     return data
 }

@@ -114,7 +114,7 @@ button {
   background: rgb(var(--clr-poster));
 }
 
-.card__tag.paper {
+.card__tag.kti {
   background: rgb(var(--clr-paper));
 }
 
@@ -624,14 +624,6 @@ nav > * {
   position: absolute;
   top: var(--rem8);
   right: var(--rem16);
-}
-
-.container__grid .card__title {
-  padding: var(--rem8) var(--rem16);
-  background: rgb(var(--clr-dark), 0.7);
-
-  position: absolute;
-  bottom: 0;
 }
 
 /* end of works */
