@@ -43,8 +43,8 @@
 
       <section class="bot-nav">
         <div class="nav__links">
-          <div class="nav__items"><a href="#">populer</a></div>
-          <div class="nav__items"><a href="#">karya kami</a></div>
+          <div class="nav__items"><a href="#popular_section">populer</a></div>
+          <div class="nav__items"><a href="#works_section">karya kami</a></div>
           <div class="nav__items"><a href="#">tentang</a></div>
         </div>
       </section>
@@ -74,7 +74,7 @@
         </div>
       </section>
 
-      <section class="popular-section">
+      <section class="popular-section" id="popular_section">
         <div class="container">
           <header class="section__header">
             <h1>populer</h1>
@@ -117,7 +117,10 @@
               </div>
 
               <div class="card__content">
-                <p class="card__title">Lorem ipsum dolor sit amet.</p>
+                <p class="card__title">
+                  Lorem, ipsum dolor sit amet consectetur adipisicing elit.
+                  Debitis, repudiandae!
+                </p>
                 <div class="card__info">
                   <span class="card__tag paper">
                     <p>kti</p>
@@ -134,7 +137,7 @@
         </div>
       </section>
 
-      <section class="works-section">
+      <section class="works-section" id="works_section">
         <div class="container">
           <header class="section__header">
             <h1>karya kami</h1>
@@ -144,7 +147,7 @@
             <div class="works__filter">
               <div class="filter__select" id="filter_type">
                 <p class="filter__selected">
-                  semua 
+                  semua
                   <i class="fa-solid fa-chevron-down"></i>
                   <i class="fa-solid fa-xmark"></i>
                 </p>
@@ -170,12 +173,58 @@
 
             <div class="works__search">
               <i class="fa-solid fa-magnifying-glass"></i>
-              <input type="text" id="works_search_input" placeholder="Cari disini...">
+              <input
+                type="text"
+                id="works_search_input"
+                placeholder="Cari disini..."
+              />
               <i class="fa-solid fa-xmark"></i>
             </div>
           </div>
 
-          <div class="container__grid"></div>
+          <div class="container__grid">
+            <div class="card">
+              <div class="card__img">
+                <img
+                  src="https://images.unsplash.com/photo-1604311795833-25e1d5c128c6?q=80&w=1527&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                />
+              </div>
+
+              <span class="card__date">
+                <p>1 Apr</p>
+              </span>
+
+              <span class="card__tag poster">
+                <p>poster</p>
+              </span>
+
+              <p class="card__title">
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aut,
+                itaque.
+              </p>
+            </div>
+
+            <div class="card">
+              <div class="card__img">
+                <img
+                  src="https://images.unsplash.com/photo-1597573337211-e1080012b84b?q=80&w=1527&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+                />
+              </div>
+
+              <span class="card__date">
+                <p>1 Apr</p>
+              </span>
+
+              <span class="card__tag paper">
+                <p>kti</p>
+              </span>
+
+              <p class="card__title">
+                Lorem ipsum, dolor sit amet consectetur adipisicing elit. Aut,
+                itaque.
+              </p>
+            </div>
+          </div>
         </div>
       </section>
     </main>

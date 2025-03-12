@@ -16,12 +16,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 // functions
 function handleToggleAsideNav() {
-  const navBot = nav_bot;
-
   if (hamburger_nav.checked) {
-    navBot.classList.add("active");
+    nav_bot.classList.add("active");
   } else {
-    navBot.classList.remove("active");
+    nav_bot.classList.remove("active");
   }
 }
 
@@ -31,10 +29,35 @@ function handleToggleNavLinks(e) {
   if (el.closest(".nav__items")) {
     const clickedItems = el.closest(".nav__items");
 
-    e.preventDefault();
+    // e.preventDefault();
+    let sectionClass = "";
+    switch (el.textContent) {
+      case "populer":
+        sectionClass = ".popular-section";
+        break;
+      case "karya kami":
+        sectionClass = ".works-section";
+        break;
+      default:
+        break;
+    }
+
+    const currSection = document.querySelector(sectionClass);
+    const navHeight = document.querySelector("nav").offsetHeight;
+
+    window.scrollTo({
+      top: currSection.offsetTop - navHeight,
+      behavior: "smooth",
+    });
 
     nav_bot_items.forEach((item) => item.classList.remove("active"));
     clickedItems.classList.add("active");
+
+    let isNavChecked = hamburger_nav.checked;
+    if (isNavChecked) {
+      hamburger_nav.checked = false
+      nav_bot.classList.remove("active");
+    }
 
     return;
   }
@@ -97,11 +120,14 @@ function handleToggleWorksSearch(e) {
   const el = e.target;
 
   if (el.closest(".fa-magnifying-glass")) {
+    const activeFilters = works_filter.querySelectorAll(".filter__select");
+
     let isWorksSearchActive = works_search.classList.contains("active");
     if (isWorksSearchActive) {
       return;
     }
 
+    activeFilters.forEach((filter) => filter.classList.remove("active"));
     works_filter.style.display = "none";
     works_search.classList.add("active");
 
