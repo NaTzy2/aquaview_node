@@ -1,3 +1,4 @@
+const nav = document.querySelector('nav')
 const hamburger_nav = document.getElementById("hamburger_nav");
 const nav_bot = document.querySelector(".bot-nav");
 const nav_bot_items = nav_bot.querySelectorAll(".nav__items");
@@ -5,8 +6,12 @@ const works_filter = document.querySelector(".works__filter");
 const works_search = document.querySelector(".works__search");
 const works_search_input = document.getElementById("works_search_input");
 
+pdfjsLib.GlobalWorkerOptions.workerSrc =
+  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js";
+
 // event listeners
 document.addEventListener("DOMContentLoaded", async () => {
+  window.addEventListener('scroll', handleToggleNavScrolled)
   hamburger_nav.addEventListener("change", handleToggleAsideNav);
   nav_bot.addEventListener("click", handleToggleNavLinks);
   works_filter.addEventListener("click", handleWorksFilter);
@@ -15,7 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   try {
     const response = await fetch("/api/files");
 
-    if (!response.ok) throw new Error(`HTTP error! Stauts: ${response.status}`);
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
 
     const filesData = await response.json();
 
@@ -27,6 +32,18 @@ document.addEventListener("DOMContentLoaded", async () => {
 // end of event listeners
 
 // functions
+function handleToggleNavScrolled()
+{
+  const scrollPosition = window.scrollY
+
+  if(scrollPosition > 100)
+  {
+    nav.classList.add('scrolled')
+  } else {
+    nav.classList.remove('scrolled')
+  }
+}
+
 function handleToggleAsideNav() {
   if (hamburger_nav.checked) {
     nav_bot.classList.add("active");
@@ -55,10 +72,9 @@ function handleToggleNavLinks(e) {
     }
 
     const currSection = document.querySelector(sectionClass);
-    const navHeight = document.querySelector("nav").offsetHeight;
 
     window.scrollTo({
-      top: currSection.offsetTop - navHeight,
+      top: currSection.offsetTop,
       behavior: "smooth",
     });
 
@@ -155,27 +171,76 @@ function handleToggleWorksSearch(e) {
 }
 
 function readFilesData(files) {
-  // handleCreateCards(files, "popular-section");
-  // handleCreateCards(files, "works-section");
-  const container = document.querySelector('.works-section .container__grid')
+  createPopularCard(files)
+  createWorksCard(files)
+}
 
-  files.forEach((file) => {
+function createPopularCard (datas)
+{
+  const container = document.querySelector('.popular-section .container__flex')
+
+  datas.sort((a, b) => b.view_count - a.view_count)
+
+  const popularDatas = datas.slice(0, 7)
+  
+  popularDatas.forEach(popular => {
     const {
       id,
       title,
       file_type,
+      view_count,
       upload_date,
       modified_date,
-      view_count,
-      img_url,
-      pdf_url,
-    } = file;
+      img_url
+    } = popular
 
-    const file_date = modified_date || upload_date
-    const file_tag = file_type === 'pdf' ? 'kti' : 'poster'
+    const card__date = modified_date || upload_date
+    const card_tag = file_type === 'pdf' ? 'kti' : 'poster'
 
     container.innerHTML += `
-    <div class="card">
+    <div class="card" data-id="${id}">
+      <div class="card__img">
+        <img
+          src="${img_url}"
+        />
+      </div>
+
+      <div class="card__views">
+        <i class="fa-solid fa-eye"></i> 
+        ${handleFormatView(view_count)}
+      </div>
+
+      <div class="card__content">
+        <p class="card__title">${title}</p>
+        <div class="card__info">
+          <span class="card__tag ${card_tag}">
+            <p>${card_tag}</p>
+          </span>
+
+          <span class="dot"></span>
+
+          <p class="card__date">${handleFormatDate(card__date, 'ddmmmyyyy')}</p>
+        </div>
+        <button class="card__button">Lihat</button>
+      </div>
+    </div>
+    `
+  })
+}
+
+function createWorksCard(datas)
+{
+  const container = document.querySelector('.works-section .container__grid')
+
+  datas.forEach(data => {
+    const { id, file_type, upload_date, modified_date, img_url} =
+      data;
+
+    const card_date = modified_date || upload_date;
+    const card_tag = file_type === "pdf" ? "kti" : "poster";
+
+    container.innerHTML += `
+    <div class="card" data-id="${id}">
       <div class="card__img">
         <img
           src="${img_url}"
@@ -183,66 +248,60 @@ function readFilesData(files) {
       </div>
 
       <span class="card__date">
-        <p>${handleFormatDate(file_date, 'ddmmm')}</p>
+        <p>${handleFormatDate(card_date, "ddmmm")}</p>
       </span>
 
-      <span class="card__tag ${file_tag}">
-        <p>${file_tag}</p>
+      <span class="card__tag ${card_tag}">
+        <p>${card_tag}</p>
       </span>
     </div>
-    `
-  });
+    `;
+  })
 }
 
-// function handleCreateCards(files, sectionClass) {
-//   const section = document.querySelector(sectionClass);
-
-//   switch (sectionClass) {
-//     case "works-section":
-//       const container = section.querySelector(".container__flex");
-
-//       files.forEach((file) => {
-//         const {
-//           id,
-//           title,
-//           file_type,
-//           upload_date,
-//           modified_date,
-//           view_count,
-//           img_url,
-//           pdf_url,
-//         } = file;
-//       });
-//       break;
-//   }
-// }
-
-function handleFormatDate(dateStr, format)
+function handleFormatView(views)
 {
-  const date = new Date(dateStr)
-
-  let result = ''
-
-  if(format === 'ddmmm')
+  if(views>=1000)
   {
-    result = date.toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: 'short'
-    })
-
-    return result
+    return views/1000+' K'
   }
 
-  if(format === 'ddmmmyyyy')
+  if(views>=1000000)
   {
-    result = date.toLocaleDateString('en-GB', {
-      day: '2-digit',
-      month: 'short',
-      year: 'numeric'
-    })
+    return views/1000000+' M'
+  }
 
-    return result
+  if(views>=1000000000)
+  {
+    return views/1000000000+' B'
+  }
+
+  return views.toString()
+}
+
+function handleFormatDate(dateStr, format) {
+  const date = new Date(dateStr);
+
+  let result = "";
+
+  if (format === "ddmmm") {
+    result = date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+    });
+
+    return result;
+  }
+
+  if (format === "ddmmmyyyy") {
+    result = date.toLocaleDateString("en-GB", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+
+    return result;
   }
 }
 
-// end of functionsm
+// end of functions
