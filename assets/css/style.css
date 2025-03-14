@@ -154,7 +154,7 @@ nav {
 
 nav.scrolled {
   background: rgb(var(--clr-deep-blue), .8);
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(3px);
   border-radius: 0px 0px var(--rem8) var(--rem8);
 }
 
@@ -250,13 +250,16 @@ nav > * {
   padding: 0;
   width: 60vw;
   height: 100vh;
-  background: rgb(var(--clr-bright-blue), 0.8);
-  backdrop-filter: blur(5px);
+  background: rgb(var(--clr-light-cyan), .8);
   transform: translateX(100%);
   transition: transform 300ms ease;
 
   position: absolute;
   right: 0;
+}
+
+nav.scrolled .bot-nav {
+  backdrop-filter: blur(5px);
 }
 
 .bot-nav.active {
@@ -282,7 +285,7 @@ nav > * {
 
 .bot-nav .nav__items:active,
 .bot-nav .nav__items.active {
-  background: rgb(var(--clr-medium-blue));
+  background: rgb(var(--clr-cyan-blue));
 }
 /* end of nav */
 
@@ -344,7 +347,6 @@ nav > * {
   width: 100%;
   height: 100%;
   background: rgb(var(--clr-deep-blue), 0.6);
-  backdrop-filter: blur(5px);
 
   display: block;
 
@@ -410,7 +412,7 @@ nav > * {
 
 /* popular */
 .container__flex .card {
-  flex: 1 0 calc(300/var(--pxrem));
+  flex: 1 0 80%;
   aspect-ratio: 3/2;
   width: 90%;
   background: rgb(var(--clr-deep-blue));
@@ -490,6 +492,7 @@ nav > * {
 /* filter */
 .works__filter {
   flex: 1;
+  user-select: none;
 
   display: flex;
   gap: var(--rem8);
@@ -594,6 +597,10 @@ nav > * {
   outline: none;
 }
 
+.works__search input::placeholder {
+  color: rgb(var(--clr-light));
+}
+
 .works__search.active,
 .works__search.active input {
   flex: 1;
@@ -617,6 +624,7 @@ nav > * {
   aspect-ratio: 3/4;
   border-radius: var(--rem4);
   overflow: hidden;
+  user-select: none;
   cursor: pointer;
 
   position: relative;
@@ -629,7 +637,6 @@ nav > * {
 
 .container__grid .card__date {
   padding: var(--rem4) var(--rem8);
-  padding-left: var(--rem16);
   background: rgb(var(--clr-dark), 0.7);
   font-size: var(--font-size-small);
   border-radius: 0px var(--rem4) var(--rem4) 0px;
@@ -641,7 +648,7 @@ nav > * {
 .container__grid .card__tag {
   position: absolute;
   top: var(--rem8);
-  right: var(--rem16);
+  right: var(--rem8);
 }
 
 /* end of works */
