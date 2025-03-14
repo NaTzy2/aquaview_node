@@ -1,4 +1,4 @@
-const nav = document.querySelector('nav')
+const nav = document.querySelector("nav");
 const hamburger_nav = document.getElementById("hamburger_nav");
 const nav_bot = document.querySelector(".bot-nav");
 const nav_bot_items = nav_bot.querySelectorAll(".nav__items");
@@ -6,12 +6,9 @@ const works_filter = document.querySelector(".works__filter");
 const works_search = document.querySelector(".works__search");
 const works_search_input = document.getElementById("works_search_input");
 
-pdfjsLib.GlobalWorkerOptions.workerSrc =
-  "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.6.347/pdf.min.js";
-
 // event listeners
 document.addEventListener("DOMContentLoaded", async () => {
-  window.addEventListener('scroll', handleToggleNavScrolled)
+  window.addEventListener("scroll", handleToggleNavScrolled);
   hamburger_nav.addEventListener("change", handleToggleAsideNav);
   nav_bot.addEventListener("click", handleToggleNavLinks);
   works_filter.addEventListener("click", handleWorksFilter);
@@ -32,15 +29,13 @@ document.addEventListener("DOMContentLoaded", async () => {
 // end of event listeners
 
 // functions
-function handleToggleNavScrolled()
-{
-  const scrollPosition = window.scrollY
+function handleToggleNavScrolled() {
+  const scrollPosition = window.scrollY;
 
-  if(scrollPosition > 100)
-  {
-    nav.classList.add('scrolled')
+  if (scrollPosition > 100) {
+    nav.classList.add("scrolled");
   } else {
-    nav.classList.remove('scrolled')
+    nav.classList.remove("scrolled");
   }
 }
 
@@ -171,19 +166,18 @@ function handleToggleWorksSearch(e) {
 }
 
 function readFilesData(files) {
-  createPopularCard(files)
-  createWorksCard(files)
+  createPopularCard(files);
+  createWorksCard(files);
 }
 
-function createPopularCard (datas)
-{
-  const container = document.querySelector('.popular-section .container__flex')
+function createPopularCard(datas) {
+  const container = document.querySelector(".popular-section .container__flex");
 
-  datas.sort((a, b) => b.view_count - a.view_count)
+  datas.sort((a, b) => b.view_count - a.view_count);
 
-  const popularDatas = datas.slice(0, 7)
-  
-  popularDatas.forEach(popular => {
+  const popularDatas = datas.slice(0, 7);
+
+  popularDatas.forEach((popular) => {
     const {
       id,
       title,
@@ -191,14 +185,14 @@ function createPopularCard (datas)
       view_count,
       upload_date,
       modified_date,
-      img_url
-    } = popular
+      img_url,
+    } = popular;
 
-    const card__date = modified_date || upload_date
-    const card_tag = file_type === 'pdf' ? 'kti' : 'poster'
+    const card__date = modified_date || upload_date;
+    const card_tag = file_type === "pdf" ? "kti" : "poster";
 
     container.innerHTML += `
-    <div class="card" data-id="${id}">
+    <div class="card" data-id="${id}" data-type="${card_tag}">
       <div class="card__img">
         <img
           src="${img_url}"
@@ -219,28 +213,33 @@ function createPopularCard (datas)
 
           <span class="dot"></span>
 
-          <p class="card__date">${handleFormatDate(card__date, 'ddmmmyyyy')}</p>
+          <p class="card__date">${handleFormatDate(card__date, "ddmmmyyyy")}</p>
         </div>
         <button class="card__button">Lihat</button>
       </div>
     </div>
-    `
-  })
+    `;
+  });
 }
 
-function createWorksCard(datas)
-{
-  const container = document.querySelector('.works-section .container__grid')
+function createWorksCard(datas) {
+  const container = document.querySelector(".works-section .container__grid");
 
-  datas.forEach(data => {
-    const { id, file_type, upload_date, modified_date, img_url} =
-      data;
+  datas.sort((a, b) => {
+    const dateA = new Date(a.modified_date) || new Date(a.upload_date);
+    const dateB = new Date(b.modified_date) || new Date(b.upload_date);
+
+    return dateB - dateA;
+  });
+
+  datas.forEach((data) => {
+    const { id, file_type, upload_date, modified_date, img_url } = data;
 
     const card_date = modified_date || upload_date;
     const card_tag = file_type === "pdf" ? "kti" : "poster";
 
     container.innerHTML += `
-    <div class="card" data-id="${id}">
+    <div class="card" data-id="${id}" data-type="${card_tag}">
       <div class="card__img">
         <img
           src="${img_url}"
@@ -256,27 +255,23 @@ function createWorksCard(datas)
       </span>
     </div>
     `;
-  })
+  });
 }
 
-function handleFormatView(views)
-{
-  if(views>=1000)
-  {
-    return views/1000+' K'
+function handleFormatView(views) {
+  if (views >= 1000) {
+    return views / 1000 + " K";
   }
 
-  if(views>=1000000)
-  {
-    return views/1000000+' M'
+  if (views >= 1000000) {
+    return views / 1000000 + " M";
   }
 
-  if(views>=1000000000)
-  {
-    return views/1000000000+' B'
+  if (views >= 1000000000) {
+    return views / 1000000000 + " B";
   }
 
-  return views.toString()
+  return views.toString();
 }
 
 function handleFormatDate(dateStr, format) {
