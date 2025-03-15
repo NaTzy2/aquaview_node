@@ -122,6 +122,8 @@ function handleWorksFilter(e) {
   }
 
   if (el.closest(".filter__items")) {
+    const worksGrid = document.querySelector(".works-section .container__grid");
+    const worksCards = worksGrid.querySelectorAll(".card");
     const currentSelected = currentFilter.querySelector(".filter__selected");
     const currentOptions = currentFilter.querySelectorAll(".filter__items");
     const currentOption = el.closest(".filter__items");
@@ -134,6 +136,34 @@ function handleWorksFilter(e) {
     currentOptions.forEach((option) => option.classList.remove("active"));
     currentOption.classList.add("active");
     currentFilter.classList.remove("active");
+    
+    worksCards.forEach((card) => {
+      let isPosterCard = card.dataset.type === "poster";
+      let isPaperCard = card.dataset.type === "kti";
+      let option = currentOption.textContent.toLowerCase()
+
+      switch (option) {
+        case "semua":
+          card.style.display = "block";
+          break;
+        case "poster":
+          if (isPosterCard) {
+            card.style.display = "block";
+          } else {
+            card.style.display = "none";
+          }
+          break;
+        case "kti":
+          if (isPaperCard) {
+            card.style.display = "block";
+          } else {
+            card.style.display = "none";
+          }
+          break;
+        default:
+          break;
+      }
+    });
 
     return;
   }
@@ -142,7 +172,14 @@ function handleWorksFilter(e) {
 function handleToggleWorksSearch(e) {
   const el = e.target;
 
-  if (el.closest(".fa-magnifying-glass")) {
+  if (el.closest(".fa-xmark")) {
+    works_search.classList.remove("active");
+    works_filter.style.display = "flex";
+
+    return;
+  }
+
+  if (el.closest('.works__search') || el.closest(".fa-magnifying-glass")) {
     const activeFilters = works_filter.querySelectorAll(".filter__select");
 
     let isWorksSearchActive = works_search.classList.contains("active");
@@ -153,13 +190,6 @@ function handleToggleWorksSearch(e) {
     activeFilters.forEach((filter) => filter.classList.remove("active"));
     works_filter.style.display = "none";
     works_search.classList.add("active");
-
-    return;
-  }
-
-  if (el.closest(".fa-xmark")) {
-    works_search.classList.remove("active");
-    works_filter.style.display = "flex";
 
     return;
   }
