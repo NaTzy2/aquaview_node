@@ -435,7 +435,7 @@ nav.scrolled .bot-nav {
 }
 
 .container__flex .card__img > img {
-  object-position: center;
+  object-position: top;
 }
 
 .container__flex .card__views {

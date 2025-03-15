@@ -226,8 +226,12 @@ function createWorksCard(datas) {
   const container = document.querySelector(".works-section .container__grid");
 
   datas.sort((a, b) => {
-    const dateA = new Date(a.modified_date) || new Date(a.upload_date);
-    const dateB = new Date(b.modified_date) || new Date(b.upload_date);
+    const dateA = a.modified_date
+      ? new Date(a.modified_date)
+      : new Date(a.upload_date);
+    const dateB = b.modified_date
+      ? new Date(b.modified_date)
+      : new Date(b.upload_date);
 
     return dateB - dateA;
   });
