@@ -8,23 +8,15 @@ const works_search_input = document.getElementById("works_search_input");
 
 // event listeners
 document.addEventListener("DOMContentLoaded", async () => {
+  const filesDatas = await handleGetFiles();
+
   window.addEventListener("scroll", handleToggleNavScrolled);
   hamburger_nav.addEventListener("change", handleToggleAsideNav);
   nav_bot.addEventListener("click", handleToggleNavLinks);
   works_filter.addEventListener("click", handleWorksFilter);
   works_search.addEventListener("click", handleToggleWorksSearch);
 
-  try {
-    const response = await fetch("/api/files");
-
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
-    const filesData = await response.json();
-
-    readFilesData(filesData);
-  } catch (error) {
-    console.error("Error fetching files: ", error);
-  }
+  readFilesData(filesDatas);
 });
 // end of event listeners
 
@@ -86,15 +78,16 @@ function handleToggleNavLinks(e) {
   }
 }
 
-function handleWorksFilter(e) {
+async function handleWorksFilter(e) {
+  const filesDatas = await handleGetFiles();
+
   const el = e.target;
   const currentFilter = el.closest(".filter__select");
+  const nextSibling = currentFilter.nextElementSibling;
+  const prevSibling = currentFilter.previousElementSibling;
 
   // toggle the filter
   if (el.closest(".filter__selected")) {
-    const nextSibling = currentFilter.nextElementSibling;
-    const prevSibling = currentFilter.previousElementSibling;
-
     let isCurrentFilterActive = currentFilter.classList.contains("active");
     if (!isCurrentFilterActive) {
       currentFilter.classList.add("active");
@@ -123,10 +116,11 @@ function handleWorksFilter(e) {
 
   if (el.closest(".filter__items")) {
     const worksGrid = document.querySelector(".works-section .container__grid");
-    const worksCards = worksGrid.querySelectorAll(".card");
     const currentSelected = currentFilter.querySelector(".filter__selected");
+    const nextSelected = nextSibling.querySelector('.filter__selected')
     const currentOptions = currentFilter.querySelectorAll(".filter__items");
     const currentOption = el.closest(".filter__items");
+    console.log(nextSelected)
 
     currentSelected.innerHTML = `
                                 ${currentOption.textContent} 
@@ -136,34 +130,122 @@ function handleWorksFilter(e) {
     currentOptions.forEach((option) => option.classList.remove("active"));
     currentOption.classList.add("active");
     currentFilter.classList.remove("active");
-    
-    worksCards.forEach((card) => {
-      let isPosterCard = card.dataset.type === "poster";
-      let isPaperCard = card.dataset.type === "kti";
-      let option = currentOption.textContent.toLowerCase()
 
-      switch (option) {
-        case "semua":
-          card.style.display = "block";
-          break;
-        case "poster":
-          if (isPosterCard) {
-            card.style.display = "block";
-          } else {
-            card.style.display = "none";
-          }
-          break;
-        case "kti":
-          if (isPaperCard) {
-            card.style.display = "block";
-          } else {
-            card.style.display = "none";
-          }
-          break;
-        default:
-          break;
-      }
-    });
+    worksGrid.innerHTML = "";
+
+    let filteredDatas;
+
+    let option = currentOption.textContent.toLowerCase();
+    switch (option) {
+      case "semua":
+        createWorksCard(filesDatas);
+        break;
+      case "poster":
+        filteredDatas = filesDatas.filter(
+          (data) => data.file_type === "poster"
+        );
+
+        if (nextSelected.textContent === "terbaru") {
+          filteredDatas.sort((a, b) => {
+            const dateA = a.modified_date
+              ? new Date(a.modified_date)
+              : new Date(a.upload_date);
+            const dateB = b.modified_date
+              ? new Date(b.modified_date)
+              : new Date(b.upload_date);
+
+            return dateB - dateA;
+          });
+
+          return
+        }
+
+        if (nextSelected.textContent === "terlama") {
+          filteredDatas.sort((a, b) => {
+            const dateA = a.modified_date
+              ? new Date(a.modified_date)
+              : new Date(a.upload_date);
+            const dateB = b.modified_date
+              ? new Date(b.modified_date)
+              : new Date(b.upload_date);
+
+            return dateA - dateB;
+          });
+
+          return
+        }
+
+        createWorksCard(filteredDatas)
+
+        break;
+      case "kti":
+        filteredDatas = filesDatas.filter((data) => data.file_type === "pdf");
+
+        if (nextSelected.textContent === "terbaru") {
+          filteredDatas.sort((a, b) => {
+            const dateA = a.modified_date
+              ? new Date(a.modified_date)
+              : new Date(a.upload_date);
+            const dateB = b.modified_date
+              ? new Date(b.modified_date)
+              : new Date(b.upload_date);
+
+            return dateB - dateA;
+          });
+
+          return
+        }
+
+        if (nextSelected.textContent === "terlama") {
+          filteredDatas.sort((a, b) => {
+            const dateA = a.modified_date
+              ? new Date(a.modified_date)
+              : new Date(a.upload_date);
+            const dateB = b.modified_date
+              ? new Date(b.modified_date)
+              : new Date(b.upload_date);
+
+            return dateA - dateB;
+          });
+
+          return
+        }
+
+        createWorksCard(filteredDatas)
+        
+        break;
+      case "terbaru":
+        filesDatas.sort((a, b) => {
+          const dateA = a.modified_date
+            ? new Date(a.modified_date)
+            : new Date(a.upload_date);
+          const dateB = b.modified_date
+            ? new Date(b.modified_date)
+            : new Date(b.upload_date);
+
+          return dateB - dateA;
+        });
+
+        createWorksCard(filesDatas);
+        break;
+      case "terlama":
+        filesDatas.sort((a, b) => {
+          const dateA = a.modified_date
+            ? new Date(a.modified_date)
+            : new Date(a.upload_date);
+          const dateB = b.modified_date
+            ? new Date(b.modified_date)
+            : new Date(b.upload_date);
+
+          return dateA - dateB;
+        });
+
+        createWorksCard(filesDatas);
+        break;
+      default:
+        console.log("Somethings went wrong");
+        break;
+    }
 
     return;
   }
@@ -179,7 +261,7 @@ function handleToggleWorksSearch(e) {
     return;
   }
 
-  if (el.closest('.works__search') || el.closest(".fa-magnifying-glass")) {
+  if (el.closest(".works__search") || el.closest(".fa-magnifying-glass")) {
     const activeFilters = works_filter.querySelectorAll(".filter__select");
 
     let isWorksSearchActive = works_search.classList.contains("active");
@@ -197,6 +279,18 @@ function handleToggleWorksSearch(e) {
 
 function readFilesData(files) {
   createPopularCard(files);
+
+  files.sort((a, b) => {
+    const dateA = a.modified_date
+      ? new Date(a.modified_date)
+      : new Date(a.upload_date);
+    const dateB = b.modified_date
+      ? new Date(b.modified_date)
+      : new Date(b.upload_date);
+
+    return dateB - dateA;
+  });
+
   createWorksCard(files);
 }
 
@@ -254,17 +348,6 @@ function createPopularCard(datas) {
 
 function createWorksCard(datas) {
   const container = document.querySelector(".works-section .container__grid");
-
-  datas.sort((a, b) => {
-    const dateA = a.modified_date
-      ? new Date(a.modified_date)
-      : new Date(a.upload_date);
-    const dateB = b.modified_date
-      ? new Date(b.modified_date)
-      : new Date(b.upload_date);
-
-    return dateB - dateA;
-  });
 
   datas.forEach((data) => {
     const { id, file_type, upload_date, modified_date, img_url } = data;
@@ -330,6 +413,20 @@ function handleFormatDate(dateStr, format) {
     });
 
     return result;
+  }
+}
+
+async function handleGetFiles() {
+  try {
+    const response = await fetch("/api/files");
+
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+    const datas = await response.json();
+
+    return datas;
+  } catch (error) {
+    console.error("Error fetching files: ", error);
   }
 }
 
