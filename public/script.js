@@ -115,7 +115,6 @@ function handleWorksFilter(e) {
   if (el.closest(".filter__items")) {
     const worksGrid = document.querySelector(".works-section .container__grid");
     const currentSelected = currentFilter.querySelector(".filter__selected");
-    const nextSelected = nextSibling.querySelector(".filter__selected");
     const currentOptions = currentFilter.querySelectorAll(".filter__items");
     const currentOption = el.closest(".filter__items");
 
@@ -130,16 +129,22 @@ function handleWorksFilter(e) {
 
     worksGrid.innerHTML = "";
 
-    let datas;
     let option = currentOption.textContent.toLowerCase();
-    handleFilteredWorks(option, nextSelected, datas)
+    handleFilteredWorks(currentFilter, option);
 
     return;
   }
 }
 
-async function handleFilteredWorks(currentOption, nextSelected, datas) {
-  datas = datas ? datas : await handleGetFilesDatas();
+async function handleFilteredWorks(currentFilter, currentOption) {
+  const datas = await handleGetFilesDatas();
+
+  const nextSibling = currentFilter.nextElementSibling;
+
+  let nextSelected;
+  if (nextSibling) {
+    nextSelected = nextSibling.querySelector(".filter__selected");
+  }
 
   let filteredDatas;
   if (currentOption === "poster") {
@@ -177,9 +182,9 @@ async function handleFilteredWorks(currentOption, nextSelected, datas) {
 
     createWorksCard(filteredDatas);
 
-    return datas;
+    return;
   }
-  
+
   if (currentOption === "kti") {
     filteredDatas = datas.filter((data) => data.file_type === "pdf");
 
@@ -215,11 +220,10 @@ async function handleFilteredWorks(currentOption, nextSelected, datas) {
 
     createWorksCard(filteredDatas);
 
-    return datas;
+    return;
   }
 
-  if(currentOption === 'terbaru')
-  {
+  if (currentOption === "terbaru") {
     datas.sort((a, b) => {
       const dateA = a.modified_date
         ? new Date(a.modified_date)
@@ -231,13 +235,12 @@ async function handleFilteredWorks(currentOption, nextSelected, datas) {
       return dateB - dateA;
     });
 
-    createWorksCard(datas)
+    createWorksCard(datas);
 
-    return datas;
+    return;
   }
-  
-  if(currentOption === 'terlama')
-  {
+
+  if (currentOption === "terlama") {
     datas.sort((a, b) => {
       const dateA = a.modified_date
         ? new Date(a.modified_date)
@@ -249,14 +252,14 @@ async function handleFilteredWorks(currentOption, nextSelected, datas) {
       return dateA - dateB;
     });
 
-    createWorksCard(datas)
+    createWorksCard(datas);
 
-    return datas;
+    return;
   }
 
-  createWorksCard(datas)
+  createWorksCard(datas);
 
-  return datas
+  return;
 }
 
 function handleToggleWorksSearch(e) {
