@@ -81,185 +81,114 @@ function handleToggleNavLinks(e) {
 function handleWorksFilter(e) {
   const el = e.target;
   const currentFilter = el.closest(".filter__select");
-  const nextSibling = currentFilter.nextElementSibling;
-  const prevSibling = currentFilter.previousElementSibling;
 
-  // toggle the filter
   if (el.closest(".filter__selected")) {
-    let isCurrentFilterActive = currentFilter.classList.contains("active");
-    if (!isCurrentFilterActive) {
-      currentFilter.classList.add("active");
-    } else {
-      currentFilter.classList.remove("active");
-    }
+    const nextSibling = currentFilter.nextElementSibling;
+    const prevSibling = currentFilter.previousElementSibling;
 
-    let isNextSiblingActive =
-      nextSibling && nextSibling.classList.contains("active");
-    if (isNextSiblingActive) {
-      nextSibling.classList.remove("active");
-
-      return;
-    }
-
-    let isPrevSiblingActive =
-      prevSibling && prevSibling.classList.contains("active");
-    if (isPrevSiblingActive) {
-      prevSibling.classList.remove("active");
-
-      return;
-    }
+    handleToggleFilterActive(currentFilter, nextSibling, prevSibling);
 
     return;
   }
 
   if (el.closest(".filter__items")) {
-    const worksGrid = document.querySelector(".works-section .container__grid");
-    const currentSelected = currentFilter.querySelector(".filter__selected");
-    const currentOptions = currentFilter.querySelectorAll(".filter__items");
-    const currentOption = el.closest(".filter__items");
-
-    currentSelected.innerHTML = `
-                                ${currentOption.textContent} 
-                                <i class="fa-solid fa-chevron-down"></i>
-                                <i class="fa-solid fa-xmark"></i>`;
-
-    currentOptions.forEach((option) => option.classList.remove("active"));
-    currentOption.classList.add("active");
-    currentFilter.classList.remove("active");
-
-    worksGrid.innerHTML = "";
-
-    let option = currentOption.textContent.toLowerCase();
-    handleFilteredWorks(currentFilter, option);
+    handleOptionSelection(currentFilter, el);
 
     return;
   }
 }
 
+function handleToggleFilterActive(currentFilter, nextFilter, prevFilter) {
+  let isCurrentFilterActive = currentFilter.classList.contains("active");
+  if (isCurrentFilterActive) {
+    currentFilter.classList.remove("active");
+  } else {
+    currentFilter.classList.add("active");
+  }
+
+  let isNextFilterActive =
+    nextFilter && nextFilter.classList.contains("active");
+  if (isNextFilterActive) {
+    nextFilter.classList.remove("active");
+
+    return;
+  }
+
+  let isPrevFilterActive =
+    prevFilter && prevFilter.classList.contains("active");
+  if (isPrevFilterActive) {
+    prevFilter.classList.remove("active");
+
+    return;
+  }
+}
+
+function handleOptionSelection(currentFilter, el) {
+  const worksGrid = document.querySelector(".works-section .container__grid");
+  const currentSelected = currentFilter.querySelector(".filter__selected");
+  const currentOptions = currentFilter.querySelectorAll(".filter__items");
+  const currentOption = el.closest(".filter__items");
+
+  currentSelected.innerHTML = `
+                                ${currentOption.textContent} 
+                                <i class="fa-solid fa-chevron-down"></i>
+                                <i class="fa-solid fa-xmark"></i>`;
+
+  currentOptions.forEach((option) => option.classList.remove("active"));
+  currentOption.classList.add("active");
+  currentFilter.classList.remove("active");
+
+  worksGrid.innerHTML = "";
+
+  let option = currentOption.textContent.toLowerCase();
+  handleFilteredWorks(currentFilter, option);
+}
+
 async function handleFilteredWorks(currentFilter, currentOption) {
   const datas = await handleGetFilesDatas();
 
-  const nextSibling = currentFilter.nextElementSibling;
-
   let nextSelected;
-  if (nextSibling) {
-    nextSelected = nextSibling.querySelector(".filter__selected");
+  if (currentFilter.nextElementSibling) {
+    const nextSibling = currentFilter.nextElementSibling
+    nextSelected = nextSibling.querySelector('.filter__selected');
   }
 
+  const filteredDatas = filterDataByOption(datas, currentOption, nextSelected);
+
+  createWorksCard(filteredDatas);
+}
+
+function filterDataByOption(datas, currentOption, nextSelected) {
   let filteredDatas;
-  if (currentOption === "poster") {
-    filteredDatas = datas.filter((data) => data.file_type === "poster");
-
-    if (nextSelected.textContent === "terbaru") {
-      filteredDatas.sort((a, b) => {
-        const dateA = a.modified_date
-          ? new Date(a.modified_date)
-          : new Date(a.upload_date);
-        const dateB = b.modified_date
-          ? new Date(b.modified_date)
-          : new Date(b.upload_date);
-
-        return dateB - dateA;
-      });
-
-      return;
-    }
-
-    if (nextSelected.textContent === "terlama") {
-      filteredDatas.sort((a, b) => {
-        const dateA = a.modified_date
-          ? new Date(a.modified_date)
-          : new Date(a.upload_date);
-        const dateB = b.modified_date
-          ? new Date(b.modified_date)
-          : new Date(b.upload_date);
-
-        return dateA - dateB;
-      });
-
-      return;
-    }
-
-    createWorksCard(filteredDatas);
-
-    return;
+  switch (currentOption) {
+    case "poster":
+      filteredDatas = datas.filter((data) => data.file_type === currentOption);
+      break;
+    case "kti":
+      filteredDatas = datas.filter((data) => data.file_type === 'pdf');
+      break;
+    case "semua":
+      filteredDatas = datas;
+      break;
+    case "terbaru":
+      filteredDatas = handleFilterByDate(datas, true)
+      break;
+    case "terlama":
+      filteredDatas = handleFilterByDate(datas, false)
+      break;
+    default:
+      console.log("Howd you get here?");
+      break;
   }
 
-  if (currentOption === "kti") {
-    filteredDatas = datas.filter((data) => data.file_type === "pdf");
+  let isCurrentTime = currentOption === 'terbaru' || currentOption === 'terlama'
+  if(nextSelected && !isCurrentTime) {
+    let isDescending = nextSelected.textContent.trim() === 'terbaru'
 
-    if (nextSelected.textContent === "terbaru") {
-      filteredDatas.sort((a, b) => {
-        const dateA = a.modified_date
-          ? new Date(a.modified_date)
-          : new Date(a.upload_date);
-        const dateB = b.modified_date
-          ? new Date(b.modified_date)
-          : new Date(b.upload_date);
-
-        return dateB - dateA;
-      });
-
-      return;
-    }
-
-    if (nextSelected.textContent === "terlama") {
-      filteredDatas.sort((a, b) => {
-        const dateA = a.modified_date
-          ? new Date(a.modified_date)
-          : new Date(a.upload_date);
-        const dateB = b.modified_date
-          ? new Date(b.modified_date)
-          : new Date(b.upload_date);
-
-        return dateA - dateB;
-      });
-
-      return;
-    }
-
-    createWorksCard(filteredDatas);
-
-    return;
+    filteredDatas = handleFilterByDate(filteredDatas, isDescending)
   }
 
-  if (currentOption === "terbaru") {
-    datas.sort((a, b) => {
-      const dateA = a.modified_date
-        ? new Date(a.modified_date)
-        : new Date(a.upload_date);
-      const dateB = b.modified_date
-        ? new Date(b.modified_date)
-        : new Date(b.upload_date);
-
-      return dateB - dateA;
-    });
-
-    createWorksCard(datas);
-
-    return;
-  }
-
-  if (currentOption === "terlama") {
-    datas.sort((a, b) => {
-      const dateA = a.modified_date
-        ? new Date(a.modified_date)
-        : new Date(a.upload_date);
-      const dateB = b.modified_date
-        ? new Date(b.modified_date)
-        : new Date(b.upload_date);
-
-      return dateA - dateB;
-    });
-
-    createWorksCard(datas);
-
-    return;
-  }
-
-  createWorksCard(datas);
-
-  return;
+  return filteredDatas
 }
 
 function handleToggleWorksSearch(e) {
@@ -291,16 +220,7 @@ function handleToggleWorksSearch(e) {
 function readFilesData(files) {
   createPopularCard(files);
 
-  files.sort((a, b) => {
-    const dateA = a.modified_date
-      ? new Date(a.modified_date)
-      : new Date(a.upload_date);
-    const dateB = b.modified_date
-      ? new Date(b.modified_date)
-      : new Date(b.upload_date);
-
-    return dateB - dateA;
-  });
+  files = handleFilterByDate(files, true)
 
   createWorksCard(files);
 }
@@ -383,6 +303,14 @@ function createWorksCard(datas) {
       </span>
     </div>
     `;
+  });
+}
+
+function handleFilterByDate(datas, isDescending) {
+  return datas.sort((a, b) => {
+    const dateA = new Date(a.modified_date || a.upload_date);
+    const dateB = new Date(b.modified_date || b.upload_date);
+    return isDescending ? dateB - dateA : dateA - dateB;
   });
 }
 
