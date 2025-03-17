@@ -8,7 +8,7 @@ const works_search_input = document.getElementById("works_search_input");
 
 // event listeners
 document.addEventListener("DOMContentLoaded", async () => {
-  const filesDatas = await handleGetFiles();
+  const filesDatas = await handleGetFilesDatas();
 
   window.addEventListener("scroll", handleToggleNavScrolled);
   hamburger_nav.addEventListener("change", handleToggleAsideNav);
@@ -78,9 +78,7 @@ function handleToggleNavLinks(e) {
   }
 }
 
-async function handleWorksFilter(e) {
-  const filesDatas = await handleGetFiles();
-
+function handleWorksFilter(e) {
   const el = e.target;
   const currentFilter = el.closest(".filter__select");
   const nextSibling = currentFilter.nextElementSibling;
@@ -117,10 +115,9 @@ async function handleWorksFilter(e) {
   if (el.closest(".filter__items")) {
     const worksGrid = document.querySelector(".works-section .container__grid");
     const currentSelected = currentFilter.querySelector(".filter__selected");
-    const nextSelected = nextSibling.querySelector('.filter__selected')
+    const nextSelected = nextSibling.querySelector(".filter__selected");
     const currentOptions = currentFilter.querySelectorAll(".filter__items");
     const currentOption = el.closest(".filter__items");
-    console.log(nextSelected)
 
     currentSelected.innerHTML = `
                                 ${currentOption.textContent} 
@@ -133,122 +130,133 @@ async function handleWorksFilter(e) {
 
     worksGrid.innerHTML = "";
 
-    let filteredDatas;
-
+    let datas;
     let option = currentOption.textContent.toLowerCase();
-    switch (option) {
-      case "semua":
-        createWorksCard(filesDatas);
-        break;
-      case "poster":
-        filteredDatas = filesDatas.filter(
-          (data) => data.file_type === "poster"
-        );
-
-        if (nextSelected.textContent === "terbaru") {
-          filteredDatas.sort((a, b) => {
-            const dateA = a.modified_date
-              ? new Date(a.modified_date)
-              : new Date(a.upload_date);
-            const dateB = b.modified_date
-              ? new Date(b.modified_date)
-              : new Date(b.upload_date);
-
-            return dateB - dateA;
-          });
-
-          return
-        }
-
-        if (nextSelected.textContent === "terlama") {
-          filteredDatas.sort((a, b) => {
-            const dateA = a.modified_date
-              ? new Date(a.modified_date)
-              : new Date(a.upload_date);
-            const dateB = b.modified_date
-              ? new Date(b.modified_date)
-              : new Date(b.upload_date);
-
-            return dateA - dateB;
-          });
-
-          return
-        }
-
-        createWorksCard(filteredDatas)
-
-        break;
-      case "kti":
-        filteredDatas = filesDatas.filter((data) => data.file_type === "pdf");
-
-        if (nextSelected.textContent === "terbaru") {
-          filteredDatas.sort((a, b) => {
-            const dateA = a.modified_date
-              ? new Date(a.modified_date)
-              : new Date(a.upload_date);
-            const dateB = b.modified_date
-              ? new Date(b.modified_date)
-              : new Date(b.upload_date);
-
-            return dateB - dateA;
-          });
-
-          return
-        }
-
-        if (nextSelected.textContent === "terlama") {
-          filteredDatas.sort((a, b) => {
-            const dateA = a.modified_date
-              ? new Date(a.modified_date)
-              : new Date(a.upload_date);
-            const dateB = b.modified_date
-              ? new Date(b.modified_date)
-              : new Date(b.upload_date);
-
-            return dateA - dateB;
-          });
-
-          return
-        }
-
-        createWorksCard(filteredDatas)
-        
-        break;
-      case "terbaru":
-        filesDatas.sort((a, b) => {
-          const dateA = a.modified_date
-            ? new Date(a.modified_date)
-            : new Date(a.upload_date);
-          const dateB = b.modified_date
-            ? new Date(b.modified_date)
-            : new Date(b.upload_date);
-
-          return dateB - dateA;
-        });
-
-        createWorksCard(filesDatas);
-        break;
-      case "terlama":
-        filesDatas.sort((a, b) => {
-          const dateA = a.modified_date
-            ? new Date(a.modified_date)
-            : new Date(a.upload_date);
-          const dateB = b.modified_date
-            ? new Date(b.modified_date)
-            : new Date(b.upload_date);
-
-          return dateA - dateB;
-        });
-
-        createWorksCard(filesDatas);
-        break;
-      default:
-        console.log("Somethings went wrong");
-        break;
-    }
+    handleFilteredWorks(option, nextSelected, datas)
 
     return;
   }
+}
+
+async function handleFilteredWorks(currentOption, nextSelected, datas) {
+  datas = datas ? datas : await handleGetFilesDatas();
+
+  let filteredDatas;
+  if (currentOption === "poster") {
+    filteredDatas = datas.filter((data) => data.file_type === "poster");
+
+    if (nextSelected.textContent === "terbaru") {
+      filteredDatas.sort((a, b) => {
+        const dateA = a.modified_date
+          ? new Date(a.modified_date)
+          : new Date(a.upload_date);
+        const dateB = b.modified_date
+          ? new Date(b.modified_date)
+          : new Date(b.upload_date);
+
+        return dateB - dateA;
+      });
+
+      return;
+    }
+
+    if (nextSelected.textContent === "terlama") {
+      filteredDatas.sort((a, b) => {
+        const dateA = a.modified_date
+          ? new Date(a.modified_date)
+          : new Date(a.upload_date);
+        const dateB = b.modified_date
+          ? new Date(b.modified_date)
+          : new Date(b.upload_date);
+
+        return dateA - dateB;
+      });
+
+      return;
+    }
+
+    createWorksCard(filteredDatas);
+
+    return datas;
+  }
+  
+  if (currentOption === "kti") {
+    filteredDatas = datas.filter((data) => data.file_type === "pdf");
+
+    if (nextSelected.textContent === "terbaru") {
+      filteredDatas.sort((a, b) => {
+        const dateA = a.modified_date
+          ? new Date(a.modified_date)
+          : new Date(a.upload_date);
+        const dateB = b.modified_date
+          ? new Date(b.modified_date)
+          : new Date(b.upload_date);
+
+        return dateB - dateA;
+      });
+
+      return;
+    }
+
+    if (nextSelected.textContent === "terlama") {
+      filteredDatas.sort((a, b) => {
+        const dateA = a.modified_date
+          ? new Date(a.modified_date)
+          : new Date(a.upload_date);
+        const dateB = b.modified_date
+          ? new Date(b.modified_date)
+          : new Date(b.upload_date);
+
+        return dateA - dateB;
+      });
+
+      return;
+    }
+
+    createWorksCard(filteredDatas);
+
+    return datas;
+  }
+
+  if(currentOption === 'terbaru')
+  {
+    datas.sort((a, b) => {
+      const dateA = a.modified_date
+        ? new Date(a.modified_date)
+        : new Date(a.upload_date);
+      const dateB = b.modified_date
+        ? new Date(b.modified_date)
+        : new Date(b.upload_date);
+
+      return dateB - dateA;
+    });
+
+    createWorksCard(datas)
+
+    return datas;
+  }
+  
+  if(currentOption === 'terlama')
+  {
+    datas.sort((a, b) => {
+      const dateA = a.modified_date
+        ? new Date(a.modified_date)
+        : new Date(a.upload_date);
+      const dateB = b.modified_date
+        ? new Date(b.modified_date)
+        : new Date(b.upload_date);
+
+      return dateA - dateB;
+    });
+
+    createWorksCard(datas)
+
+    return datas;
+  }
+
+  createWorksCard(datas)
+
+  return datas
 }
 
 function handleToggleWorksSearch(e) {
@@ -416,7 +424,7 @@ function handleFormatDate(dateStr, format) {
   }
 }
 
-async function handleGetFiles() {
+async function handleGetFilesDatas() {
   try {
     const response = await fetch("/api/files");
 
