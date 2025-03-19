@@ -80,8 +80,7 @@
             <h1>populer</h1>
           </header>
 
-          <div class="container__flex">
-          </div>
+          <div class="container__flex"></div>
         </div>
       </section>
 
@@ -122,15 +121,27 @@
             <div class="works__search">
               <i class="fa-solid fa-magnifying-glass"></i>
               <input
+              id="works_search_input"
                 type="text"
-                id="works_search_input"
+                inputmode="numeric" 
+                pattern="[0-9]*"
                 placeholder="Cari disini..."
               />
               <i class="fa-solid fa-xmark"></i>
             </div>
           </div>
 
-          <div class="container__grid">
+          <div class="container__grid"></div>
+
+          <div class="container__flex">
+            <div class="works__pagination">
+              <button class="works__prev" id="works_prev">
+                <i class="fa-solid fa-chevron-left"></i>
+              </button>
+              <button class="works__prev" id="works_prev">
+                <i class="fa-solid fa-chevron-right"></i>
+              </button>
+            </div>
           </div>
         </div>
       </section>
