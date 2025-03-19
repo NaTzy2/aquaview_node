@@ -11,12 +11,20 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+
+// app.use((req, res, next) => {
+//   if (req.url.endsWith(".js")) {
+//     res.type("application/javascript");
+//   }
+//   next();
+// });
+
 app.use(cors());
 app.use(express.json());
 
 app.use(express.static(path.join(__dirname, "../public")));
-
-app.use("/assets" ,express.static(path.join(__dirname, "../assets")))
+app.use("/js", express.static(path.join(__dirname, "../public/js")));
+app.use("/assets", express.static(path.join(__dirname, "../assets")));
 
 app.use("/api/files", fileRoutes);
 

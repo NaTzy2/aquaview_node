@@ -615,9 +615,9 @@ nav.scrolled .bot-nav {
   display: grid;
   grid-template-columns: repeat(
     auto-fill,
-    minmax(min(calc(140 / var(--pxrem)), 100%), 1fr)
+    minmax(min(calc(150 / var(--pxrem)), 100%), 1fr)
   );
-  gap: var(--rem8);
+  gap: var(--rem4);
 }
 
 .container__grid .card {
