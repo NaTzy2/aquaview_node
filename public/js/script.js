@@ -11,5 +11,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   attachEventListeners(filesDatas);
 
   displayPopularWorks(filesDatas);
-  displayAllWorks(filesDatas);
+  displayAllWorks(filesDatas)
 });

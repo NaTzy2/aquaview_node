@@ -18,9 +18,9 @@ export function handleToggleNavScrolled() {
   const scrollPosition = window.scrollY;
 
   if (scrollPosition > 50) {
-    DOM.nav.classList.add("active");
+    DOM.nav.classList.add("scrolled");
   } else {
-    DOM.nav.classList.remove("active");
+    DOM.nav.classList.remove("scrolled");
   }
 }
 

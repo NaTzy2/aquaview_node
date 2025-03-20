@@ -153,7 +153,7 @@ nav {
 }
 
 nav.scrolled {
-  background: rgb(var(--clr-deep-blue), .8);
+  background: rgb(var(--clr-deep-blue), 0.8);
   backdrop-filter: blur(3px);
   border-radius: 0px 0px var(--rem8) var(--rem8);
 }
@@ -250,7 +250,7 @@ nav > * {
   padding: 0;
   width: 60vw;
   height: 100vh;
-  background: rgb(var(--clr-light-cyan), .8);
+  background: rgb(var(--clr-light-cyan), 0.8);
   transform: translateX(100%);
   transition: transform 300ms ease;
 
@@ -299,7 +299,7 @@ nav.scrolled .bot-nav {
   background: rgb(var(--clr-deep-blue));
 }
 
-.app > section:not(.hero-section) {
+.app > section:not(.hero-section, .popular-section) {
   padding-bottom: var(--rem16);
 }
 
@@ -323,6 +323,7 @@ nav.scrolled .bot-nav {
 }
 
 .container__flex {
+  padding-bottom: var(--rem16);
   width: 100%;
   overflow-x: auto;
 
@@ -411,12 +412,14 @@ nav.scrolled .bot-nav {
 /* end of hero */
 
 /* popular */
+
 .container__flex .card {
   flex: 1 0 80%;
   aspect-ratio: 3/2;
   width: 90%;
   background: rgb(var(--clr-deep-blue));
   border-radius: var(--rem8);
+  box-shadow: 0 6px 12px rgb(var(--clr-dark), 0.4);
   overflow: hidden;
   user-select: none;
   -moz-user-select: none;
@@ -478,12 +481,14 @@ nav.scrolled .bot-nav {
   background: rgb(var(--clr-light-cyan));
   outline: none;
   border: 1px solid transparent;
-  border-radius: var(--rem4)
+  border-radius: var(--rem4);
 }
 /* end of popular */
 
 /* works */
 .works__search-filter {
+  max-width: 100%;
+
   display: flex;
   justify-content: space-evenly;
   align-items: center;
@@ -579,6 +584,7 @@ nav.scrolled .bot-nav {
 
 .works__search.active {
   padding-inline: calc(14 / var(--pxrem));
+  width: 100%;
 }
 
 .works__search,
@@ -601,10 +607,9 @@ nav.scrolled .bot-nav {
   color: rgb(var(--clr-light));
 }
 
-.works__search.active,
-.works__search.active input {
+/* .works__search.active {
   flex: 1;
-}
+} */
 
 .works__search.active input,
 .works__search.active .fa-xmark {
@@ -624,7 +629,7 @@ nav.scrolled .bot-nav {
   aspect-ratio: 3/4;
   border-radius: var(--rem4);
   overflow: hidden;
-  user-select: none;
+  box-shadow: 4px 2px 12px rgb(var(--clr-dark), 0.4);
   cursor: pointer;
 
   position: relative;
@@ -651,5 +656,43 @@ nav.scrolled .bot-nav {
   right: var(--rem8);
 }
 
+/* works pagination */
+.works-section .container__flex {
+  padding-bottom: 0px;
+
+  justify-content: center;
+}
+
+.works__pagination {
+  background: rgb(var(--clr-light-cyan));
+  border-radius: var(--rem4);
+  overflow: hidden;
+}
+
+.works__pagination > * {
+  aspect-ratio: 1;
+  width: calc(32 / var(--pxrem));
+  background: transparent;
+  border: none;
+  outline: none;
+}
+
+.works__pagination > input {
+  text-align: center;
+}
+
+.works__pagination > button {
+  background: rgb(var(--clr-pale-blue));
+}
+
+.works__pagination > button.active {
+  background: rgb(var(--clr-light-cyan));
+}
+
+.works__pagination > button.active:active,
+.works__pagination > button.active:hover {
+  background: rgb(var(--clr-cyan-blue));
+}
+/* end of works pagination */
 /* end of works */
 /* end of app */

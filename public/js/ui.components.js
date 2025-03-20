@@ -21,7 +21,8 @@ export function displayPopularWorks(datas) {
  */
 
 export function displayAllWorks(datas) {
-  const sortedDatas = sortByDate(datas, true);
+  const sortedDatas = sortByDate(datas, true).slice(0,10);
+  
 
   displayWorksCards(sortedDatas);
 }
