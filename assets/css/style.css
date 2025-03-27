@@ -629,7 +629,6 @@ nav.scrolled .bot-nav {
   aspect-ratio: 3/4;
   border-radius: var(--rem4);
   overflow: hidden;
-  box-shadow: 4px 2px 12px rgb(var(--clr-dark), 0.4);
   cursor: pointer;
 
   position: relative;
