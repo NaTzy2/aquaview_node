@@ -19,7 +19,6 @@ export function handleWorksPagination(e, datas) {
   const filterByTime = worksFilter.querySelectorAll('.filter__selected')[1]
   const timeOptions = filterByTime.querySelectorAll('.filter__items')
 
-
   if (prevPage) {
     if (!prevPage.classList.contains("active")) return;
 
