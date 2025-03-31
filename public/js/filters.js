@@ -82,8 +82,6 @@ export function handleFilteredWorks(current, option, datas) {
       .toLowerCase();
   }
 
-  console.log(option)
-
   const isByTime =
     option === FILTER_TYPES.NEWEST || option === FILTER_TYPES.OLDEST;
 
@@ -105,7 +103,6 @@ export function handleFilteredWorks(current, option, datas) {
     }
 
     if (nextSelected) {
-      console.log("next: " + nextSelected);
       switch (nextSelected) {
         case FILTER_TYPES.NEWEST:
           filteredDatas = sortByDate(filteredDatas, true);
@@ -133,7 +130,6 @@ export function handleFilteredWorks(current, option, datas) {
     }
 
     if (prevSelected) {
-      console.log("prev: " + prevSelected);
       switch (prevSelected) {
         case FILTER_TYPES.ALL:
           filteredDatas = filteredDatas;

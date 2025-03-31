@@ -1,5 +1,6 @@
 import { DOM } from "./dom.utils.js";
 import { handleWorksFilters } from "./filters.js";
+import { handleWorksPagination } from "./pagination.js";
 
 export function attachEventListeners(datas) {
   const filesDatas = datas;
@@ -8,10 +9,16 @@ export function attachEventListeners(datas) {
   DOM.hamburgerNav.addEventListener("change", handleToggleAsideNav);
   DOM.navBot.addEventListener("click", handleToggleNavLinks);
 
-  DOM.worksFilter.addEventListener("click", (e) =>
-    handleWorksFilters(e, filesDatas)
-  );
+  DOM.worksFilter.addEventListener("click", (e) => {
+    handleWorksFilters(e, filesDatas);
+  });
   DOM.worksSearch.addEventListener("click", handleToggleWorksSearch);
+  DOM.worksPrev.addEventListener("click", (e) => {
+    handleWorksPagination(e, filesDatas)
+  });
+  DOM.worksNext.addEventListener("click", (e) => {
+    handleWorksPagination(e, filesDatas)
+  });
 }
 
 export function handleToggleNavScrolled() {
@@ -30,7 +37,7 @@ export function handleToggleAsideNav() {
 
 export function handleToggleNavLinks(e) {
   const el = e.target;
-  const navHeight = DOM.nav.style.height;
+  const navHeight = DOM.nav.offsetHeight;
 
   if (!el.closest(".nav__items")) return;
 
@@ -70,16 +77,15 @@ export function handleToggleWorksSearch(e) {
     return;
   }
 
-  if(el.closest(".works__search") || el.closest(".fa-magnifying-glass"))
-  {
-    if(DOM.worksSearch.classList.contains('active')) return
+  if (el.closest(".works__search") || el.closest(".fa-magnifying-glass")) {
+    if (DOM.worksSearch.classList.contains("active")) return;
 
-    const activeFilters = DOM.worksFilter.querySelectorAll('.filter__select')
-    activeFilters.forEach(filter => filter.classList.remove('active'))
+    const activeFilters = DOM.worksFilter.querySelectorAll(".filter__select");
+    activeFilters.forEach((filter) => filter.classList.remove("active"));
 
-    DOM.worksFilter.style.display = 'none'
-    DOM.worksSearch.classList.add('active')
+    DOM.worksFilter.style.display = "none";
+    DOM.worksSearch.classList.add("active");
 
-    return
+    return;
   }
 }

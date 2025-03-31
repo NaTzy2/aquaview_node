@@ -25,7 +25,7 @@ export function setUpDomEl() {
     ".popular-section .container__flex"
   );
   DOM.worksGrid = document.querySelector(".works-section .container__grid");
-  DOM.worksNext = document.querySelector(".works__prev")
-  DOM.worksPrev = document.querySelector('.works__next')
+  DOM.worksPrev = document.querySelector(".works__prev")
+  DOM.worksNext = document.querySelector('.works__next')
   DOM.worksPageInput = document.querySelector('.works__pagination > input')
 }
