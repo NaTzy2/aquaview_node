@@ -1,27 +1,88 @@
 import { DOM } from "./dom.utils.js";
 import { handleWorksFilters } from "./filters.js";
 import { handleWorksPagination } from "./pagination.js";
+import { debounce } from "./utils.js";
 
+// Store event listeners for potential cleanup
+const eventListeners = [];
+
+/**
+ * Attach all event listeners
+ * @param {Array} datas - Files data
+ */
 export function attachEventListeners(datas) {
   const filesDatas = datas;
 
-  window.addEventListener("scroll", handleToggleNavScrolled);
-  DOM.hamburgerNav.addEventListener("change", handleToggleAsideNav);
-  DOM.navBot.addEventListener("click", handleToggleNavLinks);
+  // Debounced scroll handler for better performance
+  const debouncedScrollHandler = debounce(handleToggleNavScrolled, 100);
+  window.addEventListener("scroll", debouncedScrollHandler);
+  eventListeners.push({
+    element: window,
+    event: "scroll",
+    handler: debouncedScrollHandler,
+  });
 
-  DOM.worksFilter.addEventListener("click", (e) => {
-    handleWorksFilters(e, filesDatas);
+  DOM.hamburgerNav.addEventListener("change", handleToggleAsideNav);
+  eventListeners.push({
+    element: DOM.hamburgerNav,
+    event: "change",
+    handler: handleToggleAsideNav,
   });
+
+  DOM.navBot.addEventListener("click", handleToggleNavLinks);
+  eventListeners.push({
+    element: DOM.navBot,
+    event: "click",
+    handler: handleToggleNavLinks,
+  });
+
+  const worksFilterHandler = (e) => handleWorksFilters(e, filesDatas);
+  DOM.worksFilter.addEventListener("click", worksFilterHandler);
+  eventListeners.push({
+    element: DOM.worksFilter,
+    event: "click",
+    handler: worksFilterHandler,
+  });
+
   DOM.worksSearch.addEventListener("click", handleToggleWorksSearch);
-  DOM.worksPrev.addEventListener("click", (e) => {
-    handleWorksPagination(e, filesDatas)
+  eventListeners.push({
+    element: DOM.worksSearch,
+    event: "click",
+    handler: handleToggleWorksSearch,
   });
-  DOM.worksNext.addEventListener("click", (e) => {
-    handleWorksPagination(e, filesDatas)
+
+  const worksPrevHandler = (e) => handleWorksPagination(e, filesDatas);
+  DOM.worksPrev.addEventListener("click", worksPrevHandler);
+  eventListeners.push({
+    element: DOM.worksPrev,
+    event: "click",
+    handler: worksPrevHandler,
+  });
+
+  
+  const worksNextHandler = (e) => handleWorksPagination(e, filesDatas);
+  DOM.worksNext.addEventListener("click", worksNextHandler);
+  eventListeners.push({
+    element: DOM.worksNext,
+    event: "click",
+    handler: worksNextHandler,
   });
 }
 
+/**
+ * Clean up all event listeners
+ */
+export function removeEventListeners() {
+  eventListeners.forEach(({ element, event, handler }) => {
+    element.removeEventListener(event, handler);
+  });
+  // Clear the array
+  eventListeners.length = 0;
+}
+
 export function handleToggleNavScrolled() {
+  if (!DOM.nav) return;
+
   const scrollPosition = window.scrollY;
 
   if (scrollPosition > 50) {
@@ -32,10 +93,13 @@ export function handleToggleNavScrolled() {
 }
 
 export function handleToggleAsideNav() {
+  if (!DOM.navBot || !DOM.hamburgerNav) return;
   DOM.navBot.classList.toggle("active", DOM.hamburgerNav.checked);
 }
 
 export function handleToggleNavLinks(e) {
+  if (!DOM.nav || !DOM.navBot || !DOM.hamburgerNav || !DOM.navBotItems) return;
+
   const el = e.target;
   const navHeight = DOM.nav.offsetHeight;
 
@@ -47,11 +111,16 @@ export function handleToggleNavLinks(e) {
     "karya kami": ".works-section",
   };
 
-  const sectionClass = sections[clickedItems.textContent.toLowerCase()];
+  const sectionName = clickedItems.textContent.toLowerCase();
+  const sectionClass = sections[sectionName];
 
   if (!sectionClass) return;
 
   const currSection = document.querySelector(sectionClass);
+  if (!currSection) {
+    console.warn(`Section ${sectionClass} not found`);
+    return;
+  }
 
   window.scrollTo({
     top: currSection.offsetTop - navHeight,
@@ -68,12 +137,13 @@ export function handleToggleNavLinks(e) {
 }
 
 export function handleToggleWorksSearch(e) {
+  if (!DOM.worksSearch || !DOM.worksFilter) return;
+
   const el = e.target;
 
   if (el.closest(".fa-xmark")) {
     DOM.worksSearch.classList.remove("active");
     DOM.worksFilter.style.display = "flex";
-
     return;
   }
 
@@ -85,6 +155,11 @@ export function handleToggleWorksSearch(e) {
 
     DOM.worksFilter.style.display = "none";
     DOM.worksSearch.classList.add("active");
+
+    // Focus search input for better UX
+    if (DOM.worksSearchInput) {
+      setTimeout(() => DOM.worksSearchInput.focus(), 0);
+    }
 
     return;
   }
