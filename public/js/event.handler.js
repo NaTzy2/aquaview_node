@@ -1,6 +1,7 @@
 import { DOM } from "./dom.utils.js";
 import { handleWorksFilters } from "./filters.js";
 import { handleWorksPagination } from "./pagination.js";
+import { downloadPoster, fetchFileByID } from "./script.api.js";
 import { debounce } from "./utils.js";
 
 // Store event listeners for potential cleanup
@@ -36,6 +37,19 @@ export function attachEventListeners(datas) {
     handler: handleToggleNavLinks,
   });
 
+  DOM.popularContainer.addEventListener("click", (e) => {
+    const el = e.target;
+    if (el.closest(".card__button")) {
+      handleViewWorks(e);
+      return;
+    }
+  });
+  eventListeners.push({
+    element: DOM.popularContainer,
+    event: "click",
+    handler: handleViewWorks,
+  });
+
   const worksFilterHandler = (e) => handleWorksFilters(e, filesDatas);
   DOM.worksFilter.addEventListener("click", worksFilterHandler);
   eventListeners.push({
@@ -51,6 +65,19 @@ export function attachEventListeners(datas) {
     handler: handleToggleWorksSearch,
   });
 
+  DOM.worksGrid.addEventListener("click", (e) => {
+    const el = e.target;
+    if (el.closest(".card")) {
+      handleViewWorks(e);
+      return;
+    }
+  });
+  eventListeners.push({
+    element: DOM.worksGrid,
+    event: "click",
+    handler: handleViewWorks,
+  });
+
   const worksPrevHandler = (e) => handleWorksPagination(e, filesDatas);
   DOM.worksPrev.addEventListener("click", worksPrevHandler);
   eventListeners.push({
@@ -59,13 +86,26 @@ export function attachEventListeners(datas) {
     handler: worksPrevHandler,
   });
 
-  
   const worksNextHandler = (e) => handleWorksPagination(e, filesDatas);
   DOM.worksNext.addEventListener("click", worksNextHandler);
   eventListeners.push({
     element: DOM.worksNext,
     event: "click",
     handler: worksNextHandler,
+  });
+
+  DOM.moduleActionClose.addEventListener("click", handleCloseViewWorks);
+  eventListeners.push({
+    element: DOM.moduleActionClose,
+    event: "click",
+    handler: handleCloseViewWorks,
+  });
+
+  DOM.moduleActionDownload.addEventListener("click", handleDownloadPoster);
+  eventListeners.push({
+    element: DOM.moduleActionDownload,
+    event: "click",
+    handler: handleDownloadPoster,
   });
 }
 
@@ -101,11 +141,19 @@ export function handleToggleNavLinks(e) {
   if (!DOM.nav || !DOM.navBot || !DOM.hamburgerNav || !DOM.navBotItems) return;
 
   const el = e.target;
-  const navHeight = DOM.nav.offsetHeight;
 
   if (!el.closest(".nav__items")) return;
 
   const clickedItems = el.closest(".nav__items");
+
+  if (clickedItems.classList.contains("active")) {
+    if (DOM.hamburgerNav.checked) {
+      DOM.hamburgerNav.checked = false;
+      DOM.navBot.classList.remove("active");
+    }
+    return;
+  }
+
   const sections = {
     populer: ".popular-section",
     "karya kami": ".works-section",
@@ -122,8 +170,13 @@ export function handleToggleNavLinks(e) {
     return;
   }
 
+  const sectionTop =
+    currSection.getBoundingClientRect().top + window.pageYOffset;
+  const navHeight = DOM.nav.offsetHeight;
+  const scrollToPosition = sectionTop - navHeight;
+
   window.scrollTo({
-    top: currSection.offsetTop - navHeight,
+    top: scrollToPosition,
     behavior: "smooth",
   });
 
@@ -163,4 +216,76 @@ export function handleToggleWorksSearch(e) {
 
     return;
   }
+}
+
+export async function handleViewWorks(e) {
+  const el = e.target;
+
+  const currCard = el.closest(".card");
+  const currCardID = currCard.dataset.id;
+  const currCardType = currCard.dataset.type;
+
+  history.pushState(
+    {
+      fileID: currCardID,
+      fileType: currCardType,
+    },
+    "",
+    `/${currCardType}/${currCardID}`
+  );
+
+  try {
+    const data = await fetchFileByID(currCardID, currCardType);
+
+    if (!data) {
+      alert("Data not found");
+      return;
+    }
+
+    if (data.file_type !== "poster") {
+      history.replaceState({}, "", "/");
+      const viewURL = `https://docs.google.com/gview?url=${encodeURIComponent(
+        data.pdf_url
+      )}&embedded=true`;
+
+      const isDownload = confirm("Ingin download file ini?");
+      if (isDownload) {
+        window.open(data.pdf_url, "_blank");
+        return;
+      }
+
+      window.open(viewURL, "_blank");
+      return;
+    }
+
+    const posterImg = DOM.modulePoster.querySelector(".module__img > img");
+
+    DOM.modulePoster.classList.add("active");
+    DOM.modulePoster.setAttribute("data-id", data.id);
+
+    posterImg.src = data.img_url;
+  } catch (error) {
+    console.error("Error getting file: ", error);
+  }
+}
+
+export function handleCloseViewWorks() {
+  if (window.location.pathname !== "/") {
+    history.replaceState({}, "", "/");
+  }
+
+  const posterImg = DOM.modulePoster.querySelector(".module__img > img");
+
+  DOM.modulePoster.classList.remove("active");
+  DOM.modulePoster.setAttribute("data-id", "");
+
+  posterImg.src = "";
+}
+
+export function handleDownloadPoster() {
+  const modulePosterID = DOM.modulePoster.dataset.id
+
+  downloadPoster(modulePosterID)
+
+  history.replaceState({}, "", "/");
 }

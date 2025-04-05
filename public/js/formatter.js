@@ -50,8 +50,8 @@ export function formatDate(dateStr, format) {
  * @param {string} text - Text to sanitize
  * @returns {string} Sanitized text
  */
- export function sanitizeHTML(text) {
-    const temp = document.createElement('div');
-    temp.textContent = text;
-    return temp.innerHTML;
-  }
+export function sanitizeHTML(text) {
+  const temp = document.createElement("div");
+  temp.textContent = text;
+  return temp.innerHTML;
+}

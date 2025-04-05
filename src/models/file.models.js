@@ -1,4 +1,7 @@
 import { supabase } from "../supabase.client.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export async function getFiles() {
   const { data, error } = await supabase.from("files").select("*");
@@ -8,28 +11,31 @@ export async function getFiles() {
     throw error;
   }
 
-  const updatePromise = data.map(async (file) => {
-    const { file_type, pdf_url, img_url, id } = file;
+  return data.map((file) => {
+    const isPDF = file.file_type === "pdf" ? true : false;
 
-    let isPDF = file_type === "pdf" && !img_url;
     if (isPDF) {
-      const pdfThumbnail =
-        "https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/icons/file-earmark-pdf.svg";
-
-      file.img_url = pdfThumbnail;
-
-      const { error: updateError } = await supabase
-        .from("files")
-        .update({ img_url: pdfThumbnail })
-        .eq("id", id);
-
-      if (updateError) {
-        console.error(`Failed to update icon for file ${id}: `, updateError);
-      }
+      file.img_url = file.img_url || process.env.PDF_PLACEHOLDER_ICON;
     }
-  });
 
-  await Promise.all(updatePromise);
+    return file;
+  });
+}
+
+export async function getFileByID(fileID) {
+  const { data, error } = await supabase
+    .from("files")
+    .select("*")
+    .eq("id", fileID)
+    .single();
+
+  if (error) {
+    console.error(
+      `Supabase error: Failed to get file with ID ${fileID}: `,
+      error
+    );
+    throw error;
+  }
 
   return data;
 }

@@ -12,13 +12,6 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// app.use((req, res, next) => {
-//   if (req.url.endsWith(".js")) {
-//     res.type("application/javascript");
-//   }
-//   next();
-// });
-
 app.use(cors());
 app.use(express.json());
 

@@ -10,7 +10,7 @@ import { PAGINATION } from "./pagination.js";
  */
 export function displayPopularWorks(datas) {
   if (!datas || !Array.isArray(datas) || !DOM.popularContainer) return;
-  
+
   const popularDatas = [...datas]
     .sort((a, b) => b.view_count - a.view_count)
     .slice(0, 7);
@@ -24,15 +24,18 @@ export function displayPopularWorks(datas) {
  */
 export function displayAllWorks(datas) {
   if (!datas || !Array.isArray(datas) || !DOM.worksGrid) return;
-  
+
   const sortedDatas = sortByDate(datas, true).slice(0, PAGINATION.itemPerPage);
-  
+
   // Initialize pagination
   if (DOM.worksPrev && DOM.worksNext) {
     DOM.worksPrev.classList.remove("active"); // First page
-    DOM.worksNext.classList.toggle("active", datas.length > PAGINATION.itemPerPage);
+    DOM.worksNext.classList.toggle(
+      "active",
+      datas.length > PAGINATION.itemPerPage
+    );
   }
-  
+
   if (DOM.worksPageInput) {
     DOM.worksPageInput.value = 1;
     DOM.worksPageInput.max = Math.ceil(datas.length / PAGINATION.itemPerPage);
@@ -47,19 +50,19 @@ export function displayAllWorks(datas) {
  */
 export function createPopularCards(datas) {
   if (!datas || !Array.isArray(datas) || !DOM.popularContainer) return;
-  
+
   const container = DOM.popularContainer;
   container.innerHTML = "";
-  
+
   // Use document fragment for better performance
   const fragment = document.createDocumentFragment();
 
   datas.forEach((data) => {
     const {
       id,
-      title = "Untitled",
+      title,
       file_type,
-      view_count = 0,
+      view_count,
       upload_date,
       modified_date,
       img_url,
@@ -67,10 +70,12 @@ export function createPopularCards(datas) {
 
     const cardDate = modified_date || upload_date;
     const cardTag = file_type === "pdf" ? "kti" : "poster";
-    
+
     // Create HTML string
     const cardHTML = `
-    <div class="card" data-id="${sanitizeHTML(id)}" data-type="${sanitizeHTML(cardTag)}">
+    <div class="card" data-id="${sanitizeHTML(id)}" data-type="${sanitizeHTML(
+      cardTag
+    )}">
       <div class="card__img">
         <img src="${sanitizeHTML(img_url)}" alt="${sanitizeHTML(title)}" />
       </div>
@@ -94,12 +99,12 @@ export function createPopularCards(datas) {
         <button class="card__button">Lihat</button>
       </div>
     </div>`;
-    
+
     // Convert HTML to DOM elements and append to fragment
     const cardElement = createElementFromHTML(cardHTML);
     fragment.appendChild(cardElement);
   });
-  
+
   // Append all cards at once for better performance
   container.appendChild(fragment);
 }
@@ -110,33 +115,28 @@ export function createPopularCards(datas) {
  */
 export function displayWorksCards(datas) {
   if (!datas || !Array.isArray(datas) || !DOM.worksGrid) return;
-  
+
   const container = DOM.worksGrid;
   container.innerHTML = "";
-  
+
   if (datas.length === 0) {
     return;
   }
-  
+
   // Use document fragment for better performance
   const fragment = document.createDocumentFragment();
 
   datas.forEach((data) => {
-    const { 
-      id, 
-      file_type, 
-      upload_date, 
-      modified_date, 
-      img_url, 
-      title = "Untitled"
-    } = data;
+    const { id, file_type, upload_date, modified_date, img_url, title } = data;
 
     const cardDate = modified_date || upload_date;
     const cardTag = file_type === "pdf" ? "kti" : "poster";
-    
+
     // Create HTML string
     const cardHTML = `
-    <div class="card" data-id="${sanitizeHTML(id)}" data-type="${sanitizeHTML(cardTag)}">
+    <div class="card" data-id="${sanitizeHTML(id)}" data-type="${sanitizeHTML(
+      cardTag
+    )}">
       <div class="card__img">
         <img src="${sanitizeHTML(img_url)}" alt="${sanitizeHTML(title)}" />
       </div>
@@ -149,12 +149,13 @@ export function displayWorksCards(datas) {
         <p>${sanitizeHTML(cardTag)}</p>
       </span>
     </div>`;
-    
+
     // Convert HTML to DOM elements and append to fragment
     const cardElement = createElementFromHTML(cardHTML);
     fragment.appendChild(cardElement);
   });
-  
+
   // Append all cards at once for better performance
   container.appendChild(fragment);
 }
+

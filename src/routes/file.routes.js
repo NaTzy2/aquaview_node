@@ -1,8 +1,14 @@
-import express from 'express'
-import { getAllFiles } from '../controllers/file.controller.js'
+import express from "express";
+import {
+  downloadFile,
+  getAllFiles,
+  getFile,
+} from "../controllers/file.controller.js";
 
-const router = express.Router()
+const router = express.Router();
 
-router.get('/', getAllFiles)
+router.get("/", getAllFiles);
+router.get("/:type/:id", getFile);
+router.get("/download/poster/:id", downloadFile);
 
-export default router
+export default router;

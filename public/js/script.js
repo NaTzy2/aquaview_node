@@ -13,27 +13,27 @@ async function initApp() {
   try {
     // Fetch data
     const filesDatas = await fetchFilesDatas();
-    
+
     if (!filesDatas || filesDatas.length === 0) {
-      alert("Failed to get the datas")
+      alert("Failed to get the datas");
       return;
     }
-    
+
     // Set up DOM elements
     if (!setUpDomEl()) {
-      alert("Failed to initialized the application")
+      alert("Failed to initialized the application");
       return;
     }
-    
+
     // Reset state
     FilterState.reset();
     PAGINATION.reset();
-    
+
     // Set up events
     removeEventListeners(); // Clean up any existing listeners
     attachEventListeners(filesDatas);
     initPaginationInput(filesDatas);
-    
+
     // Display content
     displayPopularWorks(filesDatas);
     displayAllWorks(filesDatas);
@@ -46,12 +46,13 @@ async function initApp() {
 document.addEventListener("DOMContentLoaded", initApp);
 
 // Re-initialize on page visibility change (for better PWA support)
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible') {
+document.addEventListener("visibilitychange", () => {
+  if (document.visibilityState === "visible") {
     // Only re-fetch if we've been hidden for a while
     const lastActiveTime = window.lastActiveTime || 0;
     const now = Date.now();
-    if (now - lastActiveTime > 300000) { // 5 minutes
+    if (now - lastActiveTime > 300000) {
+      // 5 minutes
       initApp();
     }
   } else {
